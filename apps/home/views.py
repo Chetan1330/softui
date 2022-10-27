@@ -14,9 +14,14 @@ from django.contrib import messages
 from .models import Folder,File
 @login_required(login_url="/login/")
 def index(request):
+
     folder = Folder.objects.filter(folderuser=request.user)
     context = {'folder':folder}
     return render(request,'home/index.html',context)
+    #context = {'segment': 'index'}
+
+    # html_template = loader.get_template('home/index.html')
+    # return HttpResponse(html_template.render(context, request))
 
 # Folder with files in it
 def folder(request,folderid):
@@ -32,16 +37,26 @@ def folder(request,folderid):
 
 # Add Folder View
 def addfolder(request):
-   if request.method == 'POST':
-       folder_name = request.POST['foldername']
-       folder_desc = request.POST['desc']
-       folder = Folder.objects.create(foldername=folder_name,folderdesc=folder_desc,folderuser=request.user)
-       if folder:
-           return redirect("index")
-       else:
+    # folder_user = Folder.objects.get(id=folderid)
+    # files = File.objects.filter(folder=folder_user)
+    # context = {'folderid':folderid,'files':files}
+    if request.method == 'POST':
+        folder_name = request.POST['foldername']
+        folder_desc = request.POST['desc']
+        print("Folder Desc:",folder_desc)
+        folder = Folder.objects.create(foldername=folder_name,folderdesc=folder_desc,folderuser=request.user)
+        
+        #file_title = request.FILES['file']
+        file_user = request.FILES.getlist('file')
+        for f in file_user:
+            file_title = request.POST.get('filetitle')
+            fileadd = File.objects.create(filetitle=f.name,file=f,folder=folder)
+        if folder:
+            return redirect("index")
+        else:
             messages.error(request,"Folder Not Created")
             return redirect("index")
-            
+
 @login_required(login_url="/login/")
 def pages(request):
     context = {}
