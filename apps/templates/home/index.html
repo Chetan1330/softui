@@ -39,7 +39,7 @@
       data-bs-toggle="modal"
       data-bs-target="#exampleModal"
     >
-      New Project
+      New Folder
     </button>
 
     <!-- Modal -->
@@ -57,23 +57,21 @@
               <div class="card card-body mt-4">
                 <form action="{% url 'addfolder' %}" method="POST" enctype="multipart/form-data">
                   {% csrf_token %}
-                <h6 class="mb-0">New Project</h6>
-                <p class="text-sm mb-0">Create new project</p>
+                <h6 class="mb-0">New Folder</h6>
+                <p class="text-sm mb-0">Create new folder</p>
                 <hr class="horizontal dark my-3">
-                <label for="projectName" class="form-label">Project Name</label>
+                <label for="projectName" class="form-label">Folder Name</label>
                 <input type="text" class="form-control" name="foldername" id="projectName">
                 
-                <label class="mt-4">Project Description</label>
-                <p class="form-text text-muted text-xs ms-1">
-                  This is how others will learn about the project, so make it good!
-                </p>
+                <label class="mt-4">Folder Description</label>
+                
                 <input type="text" class="form-control" name="desc">
                 <div id="editor">
                   <p>Hello</p>
                   
                   <p><br></p>
                 </div>
-                <label class="mt-4 form-label">Project Tags</label>
+                <label class="mt-4 form-label">Folder Tags</label>
                 <select class="form-control" name="choices-multiple-remove-button" id="choices-multiple-remove-button" multiple>
                   <option value="Choice 1" selected>Choice 1</option>
                   <option value="Choice 2">Choice 2</option>
@@ -89,7 +87,7 @@
                 
                 <div class="d-flex justify-content-end mt-4">
                   <button type="button" name="button" class="btn btn-light m-0">Cancel</button>
-                  <button type="submit" name="button" class="btn bg-gradient-primary m-0 ms-2">Create Project</button>
+                  <button type="submit" name="button" class="btn bg-gradient-primary m-0 ms-2">Create Folder</button>
                 </div>
               </form>
             </form>
