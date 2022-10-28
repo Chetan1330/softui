@@ -3,7 +3,23 @@
 {% block title %} Dashboard {% endblock title %}
 
 <!-- Specific CSS goes HERE -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}
+<style>
+
+  
+  #file-chosen{
+    margin-left: 0.3rem;
+    font-family: sans-serif;
+  }
+
+  .navbar-vertical .navbar-nav > .nav-item .nav-link.active .icon {
+    background-image: linear-gradient(310deg, #82d616 0%, #82d616 100%);
+  }
+
+
+</style>
+
+{% endblock stylesheets %}
 
 {% block body_class %} g-sidenav-show bg-gray-100 {% endblock %}
 
@@ -12,6 +28,17 @@
 <div style="display: flex; padding: 10px 20px; justify-content: space-between">
   <div class="">
     <div class="container py-3">
+      <div class="col-5">
+        <button
+      type="button"
+      class="btn btn-outline-primary"
+      data-bs-toggle="modal"
+      data-bs-target="#exampleModal"
+      
+    >
+      New Project
+    </button>
+      </div>
       <div class="row">
         <!--  -->
         {% for i in folder %}
@@ -31,16 +58,10 @@
       </div>
     </div>
   </div>
+  
   <div class="">
     <!-- Button trigger modal -->
-    <button
-      type="button"
-      class="btn btn-outline-primary"
-      data-bs-toggle="modal"
-      data-bs-target="#exampleModal"
-    >
-      New Folder
-    </button>
+    
 
     <!-- Modal -->
     <div
@@ -57,79 +78,38 @@
               <div class="card card-body mt-4">
                 <form action="{% url 'addfolder' %}" method="POST" enctype="multipart/form-data">
                   {% csrf_token %}
-                <h6 class="mb-0">New Folder</h6>
-                <p class="text-sm mb-0">Create new folder</p>
+                <h6 class="mb-0">New Project</h6>
+                <p class="text-sm mb-0">Create new project</p>
                 <hr class="horizontal dark my-3">
-                <label for="projectName" class="form-label">Folder Name</label>
-                <input type="text" class="form-control" name="foldername" id="projectName">
+                <label for="projectName" class="form-label">Project Name</label>
+                <input type="text" class="form-control" name="foldername" id="projectName" required>
                 
-                <label class="mt-4">Folder Description</label>
+                <label class="mt-4">Project Description</label>
                 
-                <input type="text" class="form-control" name="desc">
-                <div id="editor">
-                  <p>Hello</p>
+                <input type="text" class="form-control" name="desc" required>
+                
+                <label class="mt-4 form-label">Input Files</label>
                   
-                  <p><br></p>
-                </div>
-                <label class="mt-4 form-label">Folder Tags</label>
-                <select class="form-control" name="choices-multiple-remove-button" id="choices-multiple-remove-button" multiple>
-                  <option value="Choice 1" selected>Choice 1</option>
-                  <option value="Choice 2">Choice 2</option>
-                  <option value="Choice 3">Choice 3</option>
-                  <option value="Choice 4">Choice 4</option>
-                </select>
-                
-                <label class="mt-4 form-label">Starting Files</label>
-                <form class="form-control dropzone" id="dropzone">
-                  <div class="fallback">
-                    <input name="file" type="file" multiple />
-                  </div>
+                  
+                    <div class="fallback">
+                      <input name="file" type="file" id="actual-btn" hidden multiple required/>
+                      
+                      <label class="btn bg-gradient-primary m-0 ms-2" for="actual-btn">Choose File</label>
+                      <!-- name of file chosen -->
+                      <span id="file-chosen">No file chosen</span>
+                    </div>
+                  
                 
                 <div class="d-flex justify-content-end mt-4">
-                  <button type="button" name="button" class="btn btn-light m-0">Cancel</button>
-                  <button type="submit" name="button" class="btn bg-gradient-primary m-0 ms-2">Create Folder</button>
+                  <button type="button" name="button" class="btn btn-light m-0"><a href="/">Cancel</a></button>
+                  <button type="submit" name="button" class="btn bg-gradient-primary m-0 ms-2">Create Project</button>
                 </div>
-              </form>
+                
+                
             </form>
               </div>
             </div>
           </div>
-
-          <!-- <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Add Folder</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <form action="{% url 'addfolder' %}" method="POST">
-            {% csrf_token %}
-              <div class="mb-3">
-                <label for="exampleFormControlInput1" class="form-label"
-                  >Folder Name</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="exampleFormControlInput1"
-                  name="foldername"
-                />
-                <label for="exampleFormControlInput1" class="form-label"
-                  >Folder Desc</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="exampleFormControlInput1"
-                  name="desc"
-                />
-                <button class="btn btn-outline-success my-3">Add Folder</button>
-              </div>
-            </form>
-          </div> -->
         </div>
       </div>
     </div>
@@ -146,45 +126,28 @@
   <script src="/static/assets/js/plugins/flatpickr.min.js"></script>
   <script src="/static/assets/js/plugins/dropzone.min.js"></script>
   <script>
-    if (document.getElementById('editor')) {
-      var quill = new Quill('#editor', {
-        theme: 'snow' // Specify theme in configuration
-      });
+
+    const actualBtn = document.getElementById('actual-btn');
+    const home = document.getElementById('home');
+    const homeico = document.getElementById('homeico');
+
+    home.onclick = function(){
+      clrhome()
     }
 
-    if (document.getElementById('choices-multiple-remove-button')) {
-      var element = document.getElementById('choices-multiple-remove-button');
-      const example = new Choices(element, {
-        removeItemButton: true
-      });
+    const fileChosen = document.getElementById('file-chosen');
 
-      example.setChoices(
-        [{
-            value: 'One',
-            label: 'Label One',
-            disabled: true
-          },
-          {
-            value: 'Two',
-            label: 'Label Two',
-            selected: true
-          },
-          {
-            value: 'Three',
-            label: 'Label Three'
-          },
-        ],
-        'value',
-        'label',
-        false,
-      );
-    }
-
-    if (document.querySelector('.datetimepicker')) {
-      flatpickr('.datetimepicker', {
-        allowInput: true
-      }); // flatpickr
-    }
+    actualBtn.addEventListener('change', function(){
+      if(this.files.length = 1){
+        fileChosen.textContent = this.files[0].name
+      }
+      if(this.files.length > 1){
+        fileChosen.textContent = this.files.length +" " + "files selected"
+      }
+      
+      
+    });
+    
 
     Dropzone.autoDiscover = false;
     var drop = document.getElementById('dropzone')
@@ -193,6 +156,25 @@
       addRemoveLinks: true
 
     });
+
+    
+
+
+    document.getElementById('btnclose').onclick = function(){
+      close()
+    }
+
+    function close(){
+      document.getElementById('exampleModal').style.display = "none"
+      
+    }
+
+    function clrhome(){
+      homeico.style.backgroundImage = "linear-gradient(310deg, #82d616 0%, #82d616 100%)";
+      
+    }
+
+
   </script>
 
 {% endblock javascripts %}

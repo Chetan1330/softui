@@ -16,12 +16,12 @@ from .models import Folder,File
 def index(request):
 
     folder = Folder.objects.filter(folderuser=request.user)
-    context = {'folder':folder}
-    return render(request,'home/index.html',context)
+    context = {'folder':folder,'segment':'index'}
+    #return render(request,'home/index.html',context)
     #context = {'segment': 'index'}
 
-    # html_template = loader.get_template('home/index.html')
-    # return HttpResponse(html_template.render(context, request))
+    html_template = loader.get_template('home/index.html')
+    return HttpResponse(html_template.render(context, request))
 
 # Folder with files in it
 def folder(request,folderid):
@@ -31,8 +31,9 @@ def folder(request,folderid):
     context = {'folderid':folderid,'files':files}
     if request.method == 'POST':
         file_user = request.FILES.get('file')
-        file_title = request.POST.get('filetitle')
-        fileadd = File.objects.create(filetitle=file_title,file=file_user,folder=folder_user)
+        for f in file_user:
+            file_title = request.POST.get('filetitle')
+            fileadd = File.objects.create(filetitle=file_title,file=file_user,folder=folder_user)
     return render(request,'home/folder.html',context)
 
 # Add Folder View
@@ -49,6 +50,7 @@ def addfolder(request):
         #file_title = request.FILES['file']
         file_user = request.FILES.getlist('file')
         for f in file_user:
+            print("f",f)
             file_title = request.POST.get('filetitle')
             fileadd = File.objects.create(filetitle=f.name,file=f,folder=folder)
         if folder:
@@ -73,7 +75,8 @@ def pages(request):
         
         context['segment']     = segment
         context['active_menu'] = active_menu
-
+        
+        
         html_template = loader.get_template('home/' + load_template)
         return HttpResponse(html_template.render(context, request))
 
