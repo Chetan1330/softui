@@ -17,8 +17,6 @@ from .models import Folder,File
 def index(request):
     print("User id:",request.user.id)
     folder = Folder.objects.filter(folderuser=request.user)
-    image = Img.objects.filter(filetitle=request.user.id)
-    print(len(image))
     # media_root = getattr(settings, 'MEDIA_ROOT', None)
     # if image:
     #     image.delete()
