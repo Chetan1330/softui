@@ -9,7 +9,3 @@ class File(models.Model):
     filetitle = models.CharField(max_length=50)
     folder = models.ForeignKey(Folder,on_delete=models.CASCADE)
     file = models.FileField(upload_to="")
-
-class Img(models.Model):
-    filetitle = models.CharField(max_length=50)
-    file = models.FileField(upload_to="Img")
