@@ -16,7 +16,6 @@
     background-image: linear-gradient(310deg, #82d616 0%, #82d616 100%);
   }
 
-
 </style>
 
 {% endblock stylesheets %}
@@ -49,6 +48,9 @@
               <p class="card-text">{{i.folderdesc}}</p>
               <a href="{% url 'folder' i.id %}" class="btn btn-outline-primary"
                 >Go Folder
+              </a>
+              <a href="{% url 'delete' i.id %}" class="btn btn-outline-primary"
+                >Delete
               </a>
             </div>
           </div>
@@ -102,7 +104,7 @@
                 
                 <div class="d-flex justify-content-end mt-4">
                   <button type="button" name="button" class="btn btn-light m-0"><a href="/">Cancel</a></button>
-                  <button type="submit" name="button" class="btn bg-gradient-primary m-0 ms-2">Create Project</button>
+                  <button id="submitbtn" type="submit" name="button" class="btn bg-gradient-primary m-0 ms-2">Create Project</button>
                 </div>
                 
                 
@@ -138,13 +140,51 @@
     const fileChosen = document.getElementById('file-chosen');
 
     actualBtn.addEventListener('change', function(){
+      var valam = parseInt(0)
+      var valpm = parseInt(0)
+      for (var i = 0; i < this.files.length; ++i) {
+        //console.log(this.files[i].name)
+
+        if (this.files[i].name.includes("AM_report")){
+          //console.log("YES")
+          valam++
+        }
+
+        if (this.files[i].name.includes("PM_report")){
+          //console.log("YES")
+          valpm++
+        }
+        //alert(this.files[i].name.substring("AM"))
+        var allowedExtensions =
+                    /(\.txt)$/i;
+
+        if (!allowedExtensions.exec(this.files[i].name)) {
+                alert('Invalid file type');
+                document.getElementById('submitbtn').style.display = "none"
+                fileInput.value = '';
+                return false;
+            }
+        else{
+          document.getElementById('submitbtn').style.display = "block"
+        }
+        //children += '<li>' + input.files.item(i).name + '</li>';
+      }
+      //console.log(valam)
+      //console.log(valpm)
+
+      if (valam == valpm){
+        document.getElementById('submitbtn').style.display = "block"
+      }
+      if (valam != valpm){
+        document.getElementById('submitbtn').style.display = "none"
+      }
+
       if(this.files.length = 1){
         fileChosen.textContent = this.files[0].name
       }
       if(this.files.length > 1){
         fileChosen.textContent = this.files.length +" " + "files selected"
       }
-      
       
     });
     
@@ -156,8 +196,6 @@
       addRemoveLinks: true
 
     });
-
-    
 
 
     document.getElementById('btnclose').onclick = function(){

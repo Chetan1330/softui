@@ -8,14 +8,21 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.urls import reverse
+from django.conf import settings
 
 from django.shortcuts import redirect, render
 from django.contrib import messages
-from .models import Folder,File
+from .models import Folder,File,Img
 @login_required(login_url="/login/")
 def index(request):
-
+    print("User id:",request.user.id)
     folder = Folder.objects.filter(folderuser=request.user)
+    image = Img.objects.filter(filetitle=request.user.id)
+    print(len(image))
+    # media_root = getattr(settings, 'MEDIA_ROOT', None)
+    # if image:
+    #     image.delete()
+    # print(media_root)
     context = {'folder':folder,'segment':'index'}
     #return render(request,'home/index.html',context)
     #context = {'segment': 'index'}
@@ -28,13 +35,48 @@ def folder(request,folderid):
     
     folder_user = Folder.objects.get(id=folderid)
     files = File.objects.filter(folder=folder_user)
-    context = {'folderid':folderid,'files':files}
+    
+    ext = []
+    for i in range(len(files)):
+        # print(files[i].filetitle.split('.')[1])
+        ext.append([files[i],files[i].filetitle.split('.')[1]])
+
+    print(ext)
+    context = {'folderid':folderid,'files':files,'ext':ext}
+    # file_user = request.FILES.get('file')
+    # for f in file_user:
+    #     print("Files:",f)
+
     if request.method == 'POST':
         file_user = request.FILES.get('file')
-        for f in file_user:
-            file_title = request.POST.get('filetitle')
-            fileadd = File.objects.create(filetitle=file_title,file=file_user,folder=folder_user)
+        file_title = request.POST.get('filetitle')
+        fileadd = File.objects.create(filetitle=file_user.name,file=file_user,folder=folder_user)
+        
     return render(request,'home/folder.html',context)
+
+# Delete Folder with files in it
+def delete(request,deleteid):
+    
+    folder_user = Folder.objects.get(id=deleteid)
+    folder_user.delete()
+    context = {'folder':folder,'segment':'index'}
+
+    return redirect("index")
+
+# Folder with files in it
+def image(request):
+    
+    # image_user = Img.objects.get(id=folderid)
+    # files = File.objects.filter(folder=folder_user)
+    # context = {'folderid':folderid,'files':files}
+    image = Img.objects.filter(filetitle=request.user.id)
+    if image:
+        image.delete()
+    context = {'folder':folder,'segment':'index'}
+    if request.method == 'POST':
+        file_user = request.FILES.get('imgfile')
+        fileadd = Img.objects.create(filetitle=request.user.id,file=file_user)
+    return render(request,'home/index.html',context)
 
 # Add Folder View
 def addfolder(request):
@@ -46,13 +88,15 @@ def addfolder(request):
         folder_desc = request.POST['desc']
         print("Folder Desc:",folder_desc)
         folder = Folder.objects.create(foldername=folder_name,folderdesc=folder_desc,folderuser=request.user)
-        
+        folder.save()
         #file_title = request.FILES['file']
         file_user = request.FILES.getlist('file')
         for f in file_user:
             print("f",f)
-            file_title = request.POST.get('filetitle')
-            fileadd = File.objects.create(filetitle=f.name,file=f,folder=folder)
+            file = request.FILES.get('file')
+            # file_title = request.POST.get('filetitle')
+            fileadd = File.objects.create(filetitle=f.name,file=file,folder=folder)
+            fileadd.save()
         if folder:
             return redirect("index")
         else:
