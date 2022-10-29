@@ -12,7 +12,7 @@ from django.conf import settings
 
 from django.shortcuts import redirect, render
 from django.contrib import messages
-from .models import Folder,File,Img
+from .models import Folder,File
 @login_required(login_url="/login/")
 def index(request):
     print("User id:",request.user.id)
@@ -63,20 +63,6 @@ def delete(request,deleteid):
 
     return redirect("index")
 
-# Folder with files in it
-def image(request):
-    
-    # image_user = Img.objects.get(id=folderid)
-    # files = File.objects.filter(folder=folder_user)
-    # context = {'folderid':folderid,'files':files}
-    image = Img.objects.filter(filetitle=request.user.id)
-    if image:
-        image.delete()
-    context = {'folder':folder,'segment':'index'}
-    if request.method == 'POST':
-        file_user = request.FILES.get('imgfile')
-        fileadd = Img.objects.create(filetitle=request.user.id,file=file_user)
-    return render(request,'home/index.html',context)
 
 # Add Folder View
 def addfolder(request):
