@@ -25,12 +25,11 @@ from wsgiref.util import FileWrapper
 
 from django.shortcuts import redirect, render
 from django.contrib import messages
-from .models import Folder,File,Img,upload
+from .models import Folder,File
 @login_required(login_url="/login/")
 def index(request):
     print("User id:",request.user.id)
     folder = Folder.objects.filter(folderuser=request.user)
-    image = Img.objects.filter(filetitle=request.user.id)
     print(len(image))
     # media_root = getattr(settings, 'MEDIA_ROOT', None)
     # if image:
