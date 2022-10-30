@@ -7,6 +7,11 @@ import os
 from decouple import config
 from unipath import Path
 
+#from pathlib import Path
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+#BASE_DIR1 = Path(__file__).resolve().parent.parent
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = Path(__file__).parent
 CORE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -107,6 +112,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #############################################################
 # SRC: https://devcenter.heroku.com/articles/django-assets
 
@@ -120,6 +127,7 @@ STATICFILES_DIRS = (
     os.path.join(CORE_DIR, 'apps/static'),
 )
 
-
+MEDIA_ROOT = (os.path.join(CORE_DIR,'apps/MediaFiles'))
+MEDIA_URL = '/mediafiles/'
 #############################################################
 #############################################################
