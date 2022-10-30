@@ -30,6 +30,7 @@ from .models import Folder,File
 def index(request):
     print("User id:",request.user.id)
     folder = Folder.objects.filter(folderuser=request.user)
+    
     # media_root = getattr(settings, 'MEDIA_ROOT', None)
     # if image:
     #     image.delete()
@@ -199,7 +200,7 @@ def pages(request):
 
         if str(load_template).endswith("txt"):
             print("YESELKLHK")
-            file_path = settings.STATIC_ROOT +'/files/'+ load_template
+            file_path = settings.MEDIA_ROOT +'/files/'+ load_template
             file_wrapper = FileWrapper(open(file_path,'rb'))
             file_mimetype = mimetypes.guess_type(file_path)
             response = HttpResponse(file_wrapper, content_type=file_mimetype )
