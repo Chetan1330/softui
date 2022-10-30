@@ -30,7 +30,6 @@ from .models import Folder,File
 def index(request):
     print("User id:",request.user.id)
     folder = Folder.objects.filter(folderuser=request.user)
-    
     # media_root = getattr(settings, 'MEDIA_ROOT', None)
     # if image:
     #     image.delete()
@@ -50,7 +49,7 @@ def folder(request,folderid):
     folder_name = folder_user.foldername
     print(folder_user.foldername)
 
-    file_path11 = settings.MEDIA_ROOT + '/' + request.user.email + '/' + folder_name
+    file_path11 = settings.STATIC_ROOT + '/' + request.user.email + '/' + folder_name
     files = File.objects.filter(folder=folder_user)
     lstdir = os.listdir(file_path11)
 
@@ -122,16 +121,16 @@ def addfolder(request):
         folder.save()
         #file_title = request.FILES['file']
         file_user = request.FILES.getlist('file')
-        file_path11 = settings.MEDIA_ROOT + '/' + request.user.email + '/' + folder_name
+        file_path11 = settings.STATIC_ROOT + '/' + request.user.email + '/' + folder_name
 
         for f in file_user:
             # file_title = request.POST.get('filetitle')
             fileadd = File.objects.create(filetitle=f.name,file=f,folder=folder)
             
 
-            fpath = settings.MEDIA_ROOT
+            fpath = settings.STATIC_ROOT
             file_path = settings.MEDIA_ROOT +'/template1.docx'
-            file_path11 = settings.MEDIA_ROOT + '/' + request.user.email + '/' + folder_name
+            file_path11 = settings.STATIC_ROOT + '/' + request.user.email + '/' + folder_name
 
             if os.path.exists(file_path11):
                 tpl = DocxTemplate(file_path)
@@ -139,6 +138,7 @@ def addfolder(request):
                 tpl.render(context)
                 tpl.save(file_path11 + "/" + "%s.docx" %str(f.name).split('.')[0])
             else:
+                
                 os.makedirs(file_path11)
                 tpl = DocxTemplate(file_path)
                 context = {"title":"Chetan"}
@@ -187,7 +187,7 @@ def pages(request):
             print("YESELKLHK")
             # print(request.POST['foldername'])
             print("Folder name:",folder_name)
-            file_path11 = settings.MEDIA_ROOT + '/' + request.user.email + '/' + folder_name + '/' + load_template
+            file_path11 = settings.STATIC_ROOT + '/' + request.user.email + '/' + folder_name + '/' + load_template
             file_wrapper = FileWrapper(open(file_path11,'rb'))
             file_mimetype = mimetypes.guess_type(file_path11)
             response = HttpResponse(file_wrapper, content_type=file_mimetype )
@@ -199,7 +199,7 @@ def pages(request):
 
         if str(load_template).endswith("txt"):
             print("YESELKLHK")
-            file_path = settings.MEDIA_ROOT +'/files/'+ load_template
+            file_path = settings.STATIC_ROOT +'/files/'+ load_template
             file_wrapper = FileWrapper(open(file_path,'rb'))
             file_mimetype = mimetypes.guess_type(file_path)
             response = HttpResponse(file_wrapper, content_type=file_mimetype )
