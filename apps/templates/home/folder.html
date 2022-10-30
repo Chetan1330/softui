@@ -21,7 +21,6 @@
     >
       Upload File
     </button>
-
       <div class="row">
         <!--  -->
         {% for file in files %}
@@ -63,7 +62,36 @@
                         </span>
                       </td>
                       <td class="align-middle text-center text-sm">
-                        <a href="{{file.file.url}}" download="{{file.file}}" class="btn btn-outline-primary">Download File </a>
+                        <a href="{{file.file.url}}" download="{file.file.url}" class="btn btn-outline-primary">Download File </a>
+                      </td>
+                      <td class="px-2 py-1 align-middle text-center">
+                        <a class="btn btn-outline-primary btn-sm edit-data" href="javascript:void(0)" data-id="{{ post.pk }}" title="Edit">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                        <button class="btn btn-outline-danger btn-sm delete-data" type="button" data-id="{{ post.pk }}" title="Delete">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </td>
+                    </tr>
+                    {% endfor %}
+
+                    {% for n,e in dirfiles %}
+                    <tr>
+                      <td>
+                        <div class="d-flex px-2 py-1">
+                          <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-sm">{{n}}</h6>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <span class="badge badge-dot me-4">
+                          <i class="bg-info"></i>
+                          <span id="ext" class="text-dark text-xs">{{e}}</span>
+                        </span>
+                      </td>
+                      <td class="align-middle text-center text-sm">
+                        <a href="{{ n }}" class="btn btn-outline-primary">Download File </a>
                       </td>
                       <td class="px-2 py-1 align-middle text-center">
                         <a class="btn btn-outline-primary btn-sm edit-data" href="javascript:void(0)" data-id="{{ post.pk }}" title="Edit">
@@ -144,4 +172,8 @@
 
 <!-- Specific JS goes HERE --> 
 {% block javascripts %} 
+<script>
+  const ext = document.getElementById('ext');
+  console.log(ext.value())
+</script>
 {% endblock javascripts %}
